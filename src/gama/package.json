@@ -1,0 +1,45 @@
+{
+  "name": "gama-mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for GAMA - Biomechanical & Multi-Dimensional Hyper-Physics Engine (2D/3D/4D/5D), GAMA-Forge Procedural CSG/SDF & Spatial Raytracing",
+  "license": "Apache-2.0",
+  "author": "ahmadshady747-create",
+  "homepage": "https://github.com/ahmadshady747-create/gama-binaries",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmadshady747-create/gama-binaries.git"
+  },
+  "bugs": "https://github.com/ahmadshady747-create/gama-binaries/issues",
+  "type": "module",
+  "bin": {
+    "gama-mcp-server": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "schema.json"
+  ],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/*.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "shx": "^0.4.0",
+    "typescript": "^5.8.2"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gama",
+    "physics-engine",
+    "hyper-physics",
+    "biomechanics",
+    "procedural-csg",
+    "spatial-audio"
+  ]
+}

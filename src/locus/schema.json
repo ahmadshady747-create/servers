@@ -1,0 +1,816 @@
+{
+  "server": "locus-mcp-server",
+  "version": "2.0.0",
+  "tools": [
+    {
+      "name": "acquire_subtree_lease",
+      "description": "Acquires an exclusive hierarchical wildcard lease (e.g. `src/auth/*` or `crate::billing::*`) with TTL across multi-agent swarms, enforcing bidirectional subtree conflict guards.",
+      "parameters": {
+        "properties": {
+          "agent_id": {
+            "description": "Unique agent identifier",
+            "type": "string"
+          },
+          "pattern": {
+            "description": "Wildcard pattern or module path (e.g. `src/auth/*`, `crate::billing::*`)",
+            "type": "string"
+          },
+          "ttl_ms": {
+            "description": "Lease duration in milliseconds (default: 60000)",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pattern",
+          "agent_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "acquire_symbol_lease",
+      "description": "Acquires an exclusive short-lived symbol lease with TTL on an FQN across multi-agent swarms to prevent concurrent write collisions.",
+      "parameters": {
+        "properties": {
+          "agent_id": {
+            "description": "Unique agent identifier",
+            "type": "string"
+          },
+          "fqn": {
+            "description": "Fully Qualified Symbol Name (e.g. src/auth.rs::login)",
+            "type": "string"
+          },
+          "ttl_ms": {
+            "description": "Time-To-Live in milliseconds (default: 60000)",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "fqn",
+          "agent_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "audit_taint_path",
+      "description": "Traces inter-procedural SSA data-flow taint propagation across call graph G=(V, E) and returns verified sanitizer proof chains with cryptographic TaintAuditCertificate.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Optional raw source code content",
+            "type": "string"
+          },
+          "file_path": {
+            "description": "Target source file path",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Optional target symbol name (default: '*')",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "auto_remediate",
+      "description": "Deterministic AST self-healing rewriter that automatically closes broken JSX/HTML tags, fixes deep property null accesses to optional chaining (?.), and hoists conditional React hooks.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Raw source code snippet to deterministically remediate",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "begin_tx",
+      "description": "Opens a multi-file ACID workspace transaction in-memory with automatic rollback journal.",
+      "parameters": {
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "check_safety",
+      "description": "Deterministic AST invariant safety check (<0.05ms) catching delimiter balance, async mutex across await, div-by-zero, array bounds, unsafe unwraps, ReDoS, JSX tag mismatches, conditional hooks, and client secret leaks.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Raw code snippet to verify (optional if path is provided)",
+            "type": "string"
+          },
+          "path": {
+            "description": "Path to the source file to verify on disk",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "commit_tx",
+      "description": "Validates all staged files across AST invariants and atomically commits to disk if and only if 100% pass.",
+      "parameters": {
+        "properties": {
+          "tx_id": {
+            "description": "Active transaction ID to commit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tx_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "extract_intent_slice",
+      "description": "Extracts a minimal, high-density AST context slice containing only the target symbol and its direct dependencies up to N degrees of separation.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Optional raw source code to slice from",
+            "type": "string"
+          },
+          "depth": {
+            "description": "Dependency traversal depth (default: 2)",
+            "type": "integer"
+          },
+          "language": {
+            "description": "Programming language",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          },
+          "path": {
+            "description": "Optional file path or directory on disk",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Name of the target symbol/function/component to slice around",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "find_references",
+      "description": "Finds all inbound call sites, imports, and references for a symbol across the entire indexed workspace.",
+      "parameters": {
+        "properties": {
+          "symbol": {
+            "description": "Symbol name to look up references for",
+            "type": "string"
+          },
+          "target_path": {
+            "description": "Workspace root directory (default: .)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_blast_radius",
+      "description": "Calculates the blast-radius impact of modifying a symbol, identifying direct and transitive dependent files, caller sites, reference counts, and breaking change risk score.",
+      "parameters": {
+        "properties": {
+          "depth": {
+            "description": "Transitive dependency depth (default: 2)",
+            "type": "integer"
+          },
+          "file": {
+            "description": "Optional origin file path",
+            "type": "string"
+          },
+          "path": {
+            "description": "Workspace root directory (default: .)",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Target symbol to calculate modification blast-radius for",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "hybrid_search",
+      "description": "Executes sub-millisecond in-memory hybrid AST lexical + quantized HNSW vector search across indexed symbols.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "Workspace root directory to search (default: .)",
+            "type": "string"
+          },
+          "query": {
+            "description": "Semantic query or symbol description",
+            "type": "string"
+          },
+          "top_k": {
+            "description": "Maximum number of search results (default: 5)",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "index_graph",
+      "description": "Recursively indexes a directory tree into a cross-file SymbolGraph, linking references and computing token savings.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "Directory path to index",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "morph_ast",
+      "description": "Executes deterministic AST transformations, refactorings, and rule remediations (converting unsafe unwraps to ?, hoisting conditional hooks, balancing JSX tags, repairing deep property null accesses) with full post-verification proof.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Source code to transform",
+            "type": "string"
+          },
+          "language": {
+            "description": "Optional programming language",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "patch_symbol",
+      "description": "Surgically replaces a named AST symbol (function, struct, component, event handler) with new code within a source file.",
+      "parameters": {
+        "properties": {
+          "language": {
+            "description": "Programming language of the source",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          },
+          "new_code": {
+            "description": "New implementation for the symbol",
+            "type": "string"
+          },
+          "source": {
+            "description": "Original source code",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Name of the function, struct, class, component, or event handler to replace",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "symbol",
+          "new_code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_context",
+      "description": "High-throughput compound context pipeline: Combines AST skeletonization, blast-radius calculation, context slicing, and symbol resolution in a single sub-millisecond pass to eliminate multi-step LLM round-trips.",
+      "parameters": {
+        "properties": {
+          "budget": {
+            "description": "Optional token budget limit (default: 2000)",
+            "type": "integer"
+          },
+          "depth": {
+            "description": "Optional dependency traversal depth for blast radius (default: 2)",
+            "type": "integer"
+          },
+          "symbol": {
+            "description": "Optional symbol to calculate blast radius and focused context slice around",
+            "type": "string"
+          },
+          "target_file": {
+            "description": "Target file to extract skeleton and context from",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_file"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "query_cst",
+      "description": "Parses raw source code into a Lossless Concrete Syntax Tree (CST) with Green/Red nodes, trivia (comments, whitespace), and absolute byte offsets.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Source code snippet to parse into CST",
+            "type": "string"
+          },
+          "language": {
+            "description": "Optional programming language (default: rust)",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "python"
+            ],
+            "type": "string"
+          },
+          "offset": {
+            "description": "Optional byte offset to query the exact token or syntax node at",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "release_symbol_lease",
+      "description": "Releases an active symbol lease held by an agent.",
+      "parameters": {
+        "properties": {
+          "agent_id": {
+            "description": "Agent identifier",
+            "type": "string"
+          },
+          "lease_id": {
+            "description": "Lease ID returned during acquisition",
+            "type": "string"
+          }
+        },
+        "required": [
+          "lease_id",
+          "agent_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "renew_symbol_lease",
+      "description": "Renews an active symbol lease heartbeat extension.",
+      "parameters": {
+        "properties": {
+          "agent_id": {
+            "description": "Agent identifier",
+            "type": "string"
+          },
+          "extension_ms": {
+            "description": "Extension duration in milliseconds (default: 60000)",
+            "type": "integer"
+          },
+          "lease_id": {
+            "description": "Active lease ID",
+            "type": "string"
+          }
+        },
+        "required": [
+          "lease_id",
+          "agent_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "resolve_symbol",
+      "description": "Resolves full symbol definition metadata, origin file, byte coordinates, signatures, and doc-comments across module paths.",
+      "parameters": {
+        "properties": {
+          "from_file": {
+            "description": "Optional calling file context (e.g. src/main.rs)",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Name of the symbol to resolve (e.g. AstGuard, UserProfileCard)",
+            "type": "string"
+          },
+          "target_path": {
+            "description": "Workspace root directory to search (default: .)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "rollback_tx",
+      "description": "Rolls back and aborts an active workspace transaction, clearing staged buffers without touching disk.",
+      "parameters": {
+        "properties": {
+          "tx_id": {
+            "description": "Transaction ID to rollback",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tx_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "semantic_analyze",
+      "description": "Executes comprehensive semantic invariant analysis (Rules S1..S5), synthesizes formal mathematical proofs with WP calculus derivations, detects counterexamples, and generates deterministic auto-fixes with optional SARIF v2.1.0 export.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Source code text to analyze",
+            "type": "string"
+          },
+          "language": {
+            "description": "Programming language (typescript, javascript, rust, etc.)",
+            "type": "string"
+          },
+          "path": {
+            "description": "Optional file path to load source code from",
+            "type": "string"
+          },
+          "sarif": {
+            "description": "If true, includes full OASIS SARIF v2.1.0 report in the response (default: false)",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "simd_vector_search",
+      "description": "Executes batch hardware-accelerated (AVX2 256-bit / ARM NEON 128-bit) quantized 8-bit dot-product vector search with zero heap allocations, achieving sub-20\u00b5s latency.",
+      "parameters": {
+        "properties": {
+          "corpus": {
+            "description": "Optional list of corpus items to dynamically index and search",
+            "items": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "query_text": {
+            "description": "Query text to embed and search",
+            "type": "string"
+          },
+          "query_vector": {
+            "description": "Optional raw 64-dim i8 quantized query vector",
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "top_k": {
+            "description": "Number of nearest neighbors to return (default: 5)",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "skeletonize",
+      "description": "Surgically extracts an AST skeleton (type signatures, imports, interfaces, collapsed JSX render trees) providing >50-80% context token reduction across Rust, TSX, JSX, Svelte, Astro, Vue, and Python.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Raw source code to skeletonize",
+            "type": "string"
+          },
+          "language": {
+            "description": "Programming language of the code",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "stage_tx",
+      "description": "Stages a file modification into the active in-memory ACID transaction buffer.",
+      "parameters": {
+        "properties": {
+          "content": {
+            "description": "Staged file content",
+            "type": "string"
+          },
+          "file_path": {
+            "description": "Target file path to stage",
+            "type": "string"
+          },
+          "language": {
+            "description": "Optional language",
+            "type": "string"
+          },
+          "tx_id": {
+            "description": "Active transaction ID",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tx_id",
+          "file_path",
+          "content"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "synthesize_contract",
+      "description": "Proactively projects developer intent into strict type contract scaffolding and safety invariant checklists before code generation.",
+      "parameters": {
+        "properties": {
+          "context": {
+            "description": "Optional surrounding context or existing types",
+            "type": "string"
+          },
+          "intent": {
+            "description": "Developer intent or feature specification",
+            "type": "string"
+          },
+          "language": {
+            "description": "Target programming language",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          },
+          "target_path": {
+            "description": "Optional target file path (e.g. src/auth.rs, src/UserCard.tsx)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "trace_taint_flow",
+      "description": "Traces cross-file taint and unvalidated external data flows heading toward sensitive sinks (DB queries, filesystem calls, unhandled Option/null returns).",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "Optional raw source code snippet to analyze directly without disk access",
+            "type": "string"
+          },
+          "file_path": {
+            "description": "Target file to trace",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Optional symbol to scope taint tracking",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "verified_patch",
+      "description": "High-throughput compound patching pipeline: Atomically executes pre-patch invariant safety verification -> in-memory AST symbol replacement -> post-patch full-file integrity validation -> atomic disk write. Aborts with detailed diagnostics if any safety invariant is violated.",
+      "parameters": {
+        "properties": {
+          "dry_run": {
+            "description": "If true, validates and previews the patch without writing to disk",
+            "type": "boolean"
+          },
+          "file_path": {
+            "description": "Target file to surgically patch on disk",
+            "type": "string"
+          },
+          "language": {
+            "description": "Optional programming language (inferred from file extension if omitted)",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          },
+          "new_code": {
+            "description": "New implementation code for the symbol",
+            "type": "string"
+          },
+          "symbol": {
+            "description": "Name of the function, struct, component, or event handler to patch",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path",
+          "symbol",
+          "new_code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "verify_contract",
+      "description": "Bidirectionally verifies that generated code satisfies the synthesized architectural contract with zero safety violations and complete signature fidelity.",
+      "parameters": {
+        "properties": {
+          "contract": {
+            "description": "Synthesized IntentContract JSON object",
+            "type": "object"
+          },
+          "generated_code": {
+            "description": "Implementation code produced by the AI model",
+            "type": "string"
+          },
+          "intent": {
+            "description": "Alternative: developer intent string if contract object is not provided",
+            "type": "string"
+          },
+          "language": {
+            "description": "Programming language",
+            "enum": [
+              "rust",
+              "typescript",
+              "javascript",
+              "tsx",
+              "jsx",
+              "svelte",
+              "astro",
+              "vue",
+              "python"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "generated_code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "verify_occ_token",
+      "description": "Deterministically checks or commits monotonic Optimistic Concurrency Control (OCC) version tokens across multi-agent swarms.",
+      "parameters": {
+        "properties": {
+          "commit": {
+            "description": "If true, advances the OCC version counter on match (default: false)",
+            "type": "boolean"
+          },
+          "expected_version": {
+            "description": "Expected monotonic OCC version",
+            "type": "integer"
+          },
+          "fqn": {
+            "description": "Target symbol or module FQN",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fqn",
+          "expected_version"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "verify_proof",
+      "description": "Executes high-throughput dynamic AST & semantic proof verification on code claims, evaluates assertions with fail-fast tri-state verdicts, and mints cryptographic SHA-256 certificates in sub-0.15ms.",
+      "parameters": {
+        "properties": {
+          "assertions": {
+            "description": "Optional list of ProofAssertion objects",
+            "type": "array"
+          },
+          "claim": {
+            "description": "ProofClaim JSON object containing claim_id, target_symbol, invariant_name, and assertions",
+            "type": "object"
+          },
+          "claim_id": {
+            "description": "Optional claim ID shorthand if constructing inline claim",
+            "type": "string"
+          },
+          "code": {
+            "description": "Source code text to verify",
+            "type": "string"
+          },
+          "invariant_name": {
+            "description": "Optional invariant name shorthand",
+            "type": "string"
+          },
+          "language": {
+            "description": "Optional target programming language (default: rust)",
+            "type": "string"
+          },
+          "path": {
+            "description": "Optional file path to load source code from",
+            "type": "string"
+          },
+          "target_symbol": {
+            "description": "Optional target symbol shorthand",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  ]
+}

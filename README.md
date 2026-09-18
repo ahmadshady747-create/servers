@@ -52,6 +52,54 @@ The following reference servers are now archived and can be found at [servers-ar
 - **[Slack](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack)** - Channel management and messaging capabilities. Now maintained by [Zencoder](https://github.com/zencoderai/slack-mcp-server)
 - **[SQLite](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite)** - Database interaction and business intelligence capabilities.
 
+## 🌐 Community & Custom Servers
+
+Specialized high-performance MCP servers developed by the community for deterministic AI code verification and multi-dimensional physical simulation:
+
+### 🛡️ [LOCUS Engine](src/locus)
+**Deterministic AST Safety Guard & Invariant Verification Engine**
+- **Description:** A deterministic guardrail and AST safety engine for AI coding agents. Provides 32-pass AST safety verification (zero unhandled hook calls, zero client-side secret leaks, zero unbalanced JSX tags, zero unhandled async locks), pre-generation contract synthesis, token-efficient AST slicing, surgical verified symbol patching, ACID multi-file workspace transactions, SSA taint flow tracking, and formal mathematical proofs (Weakest Precondition calculus).
+- **Distribution & Binaries:** Standalone release binaries and distributions are available at [ahmadshady747-create/locus-binaries](https://github.com/ahmadshady747-create/locus-binaries/releases/latest) (includes `locus.exe` and `locus-v1.0.0-windows-x64.zip`).
+- **Quickstart:**
+  ```bash
+  npx -y locus-mcp-server
+  ```
+- **Claude Desktop Configuration:**
+  ```json
+  {
+    "mcpServers": {
+      "locus": {
+        "command": "cmd",
+        "args": ["/c", "npx", "-y", "locus-mcp-server"]
+      }
+    }
+  }
+  ```
+  *(On macOS / Linux, set `"command": "npx"` and `"args": ["-y", "locus-mcp-server"]`, or configure the standalone `locus` executable path).*
+
+---
+
+### ⚛️ [GAMA Engine](src/gama)
+**Biomechanical & Multi-Dimensional Hyper-Physics Simulation Engine**
+- **Description:** An ultra-fast spatial physics simulation engine supporting Euclidean 2D, 3D, 4D, and 5D manifolds. Features GAMA-Forge for procedural 3D Signed Distance Fields (SDF) and boolean CSG operations, SAT collision solvers, kinetic controllers, biomechanical facial simulation, real-time spatial acoustic raytracing, and zero-GC memory invariants for high-frequency simulation loops.
+- **Distribution & Binaries:** Standalone release packages are available at [ahmadshady747-create/gama-binaries](https://github.com/ahmadshady747-create/gama-binaries/releases/latest) (includes `gama-v1.0.0-dist.zip`).
+- **Quickstart:**
+  ```bash
+  npx -y gama-mcp-server
+  ```
+- **Claude Desktop Configuration:**
+  ```json
+  {
+    "mcpServers": {
+      "gama": {
+        "command": "cmd",
+        "args": ["/c", "npx", "-y", "gama-mcp-server"]
+      }
+    }
+  }
+  ```
+  *(On macOS / Linux, set `"command": "npx"` and `"args": ["-y", "gama-mcp-server"]`, or configure the standalone `gama` binary path).*
+
 ## 🚀 Getting Started
 
 ### Using MCP Servers in this Repository

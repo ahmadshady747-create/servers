@@ -1,0 +1,44 @@
+{
+  "name": "locus-mcp-server",
+  "version": "2.0.0",
+  "description": "Model Context Protocol (MCP) server for LOCUS - Deterministic AST Safety Guard, Verification Engine & Sovereign Code Agent Guardrails",
+  "license": "Apache-2.0",
+  "author": "ahmadshady747-create",
+  "homepage": "https://github.com/ahmadshady747-create/LOCUS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmadshady747-create/LOCUS.git"
+  },
+  "bugs": "https://github.com/ahmadshady747-create/LOCUS/issues",
+  "type": "module",
+  "bin": {
+    "locus-mcp-server": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "schema.json"
+  ],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/*.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "shx": "^0.4.0",
+    "typescript": "^5.8.2"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "locus",
+    "ast-safety",
+    "code-verification",
+    "guardrails",
+    "agentic-coding"
+  ]
+}

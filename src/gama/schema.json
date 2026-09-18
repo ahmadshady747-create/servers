@@ -1,0 +1,1324 @@
+{
+  "server": "gama-mcp-server",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "forge_apply_csg",
+      "description": "Applies exact polyhedral boundary CSG operations (Union, Subtract, Intersect) directly on active polygonal meshes.",
+      "parameters": {
+        "properties": {
+          "meshAId": {
+            "description": "Identifier of mesh A",
+            "type": "string"
+          },
+          "meshBId": {
+            "description": "Identifier of mesh B",
+            "type": "string"
+          },
+          "operation": {
+            "description": "CSG boolean operation to perform",
+            "enum": [
+              "union",
+              "subtract",
+              "intersect"
+            ],
+            "type": "string"
+          },
+          "resultMeshId": {
+            "description": "Identifier for output mesh",
+            "type": "string"
+          }
+        },
+        "required": [
+          "meshAId",
+          "meshBId",
+          "resultMeshId",
+          "operation"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "forge_apply_operator",
+      "description": "Applies boolean CSG (Union, Diff, Intersect), smooth blending (smin), or domain warps (twist, bend, shell, round) to SDF nodes.",
+      "parameters": {
+        "properties": {
+          "id": {
+            "description": "Unique identifier for resulting composite SDF node",
+            "type": "string"
+          },
+          "operator": {
+            "description": "Operation to apply",
+            "enum": [
+              "union",
+              "difference",
+              "intersection",
+              "smooth_union",
+              "smooth_difference",
+              "smooth_intersection",
+              "twist",
+              "bend",
+              "shell",
+              "round"
+            ],
+            "type": "string"
+          },
+          "param": {
+            "description": "Smooth blend radius or warp rate parameter (default: 0.2)",
+            "type": "number"
+          },
+          "targetA": {
+            "description": "Identifier of operand A",
+            "type": "string"
+          },
+          "targetB": {
+            "description": "Identifier of operand B (required for binary operations)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "operator",
+          "targetA"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "forge_create_sdf_primitive",
+      "description": "Creates a 3D Signed Distance Field primitive (Sphere, Box, Cylinder, Torus, Gyroid, Capsule) in the active Forge session.",
+      "parameters": {
+        "properties": {
+          "dimensions": {
+            "description": "Dimensions: [radius] for sphere, [hx, hy, hz] for box, [r, h] for cylinder, [R, r] for torus",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "id": {
+            "description": "Unique identifier for the SDF primitive node",
+            "type": "string"
+          },
+          "transform": {
+            "properties": {
+              "posX": {
+                "type": "number"
+              },
+              "posY": {
+                "type": "number"
+              },
+              "posZ": {
+                "type": "number"
+              },
+              "scaleX": {
+                "type": "number"
+              },
+              "scaleY": {
+                "type": "number"
+              },
+              "scaleZ": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "description": "Mathematical primitive volume type",
+            "enum": [
+              "sphere",
+              "box",
+              "cylinder",
+              "torus",
+              "gyroid",
+              "capsule"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "forge_export_asset",
+      "description": "Exports geometry to a binary glTF 2.0 (.glb) asset or integrates it directly into GAMA physics body colliders.",
+      "parameters": {
+        "properties": {
+          "density": {
+            "description": "Material density in kg per m^3 (default: 1000)",
+            "type": "number"
+          },
+          "format": {
+            "description": "Export format: glb (base64 binary) or gama_body (physics collider representation)",
+            "enum": [
+              "glb",
+              "gama_body"
+            ],
+            "type": "string"
+          },
+          "isStatic": {
+            "description": "Whether body is static in physics world",
+            "type": "boolean"
+          },
+          "meshId": {
+            "description": "Identifier of mesh to export",
+            "type": "string"
+          }
+        },
+        "required": [
+          "meshId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "forge_extract_mesh",
+      "description": "Extracts a watertight 3D polygonal mesh from an active SDF tree using the Marching Cubes polygonizer.",
+      "parameters": {
+        "properties": {
+          "boundsMax": {
+            "description": "[maxX, maxY, maxZ]",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "boundsMin": {
+            "description": "[minX, minY, minZ]",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "isoLevel": {
+            "description": "Isosurface threshold value (default: 0.0)",
+            "type": "number"
+          },
+          "meshId": {
+            "description": "Identifier to store generated mesh under",
+            "type": "string"
+          },
+          "resolution": {
+            "description": "Voxel grid resolution (default: 24, range: 8..48)",
+            "type": "number"
+          },
+          "targetSdfId": {
+            "description": "Identifier of SDF to polygonize",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetSdfId",
+          "meshId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "forge_validate_manifold",
+      "description": "Audits a polygonal mesh for 2-manifold integrity, Euler-Poincare characteristic, boundary holes, and zero-NaN coordinates.",
+      "parameters": {
+        "properties": {
+          "meshId": {
+            "description": "Identifier of mesh to audit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "meshId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_aerodynamics_step",
+      "description": "Computes aerodynamic lift, drag, and Magnus forces.",
+      "parameters": {
+        "properties": {
+          "altitude": {
+            "type": "number"
+          },
+          "spin": {
+            "type": "object"
+          },
+          "velocity": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_ai_generate_dialogue",
+      "description": "Generates structured in-engine branching dialogue trees with sentiment analysis, emotion cues, and player choices without external tools.",
+      "parameters": {
+        "properties": {
+          "archetype": {
+            "description": "Personality archetype (e.g. cautious merchant, hostile guard, wise mentor)",
+            "type": "string"
+          },
+          "characterName": {
+            "description": "Name of the NPC speaker",
+            "type": "string"
+          },
+          "situation": {
+            "description": "Context of the conversation",
+            "type": "string"
+          },
+          "tone": {
+            "description": "Tone of voice (e.g. tense, playful, solemn, aggressive)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "characterName",
+          "situation"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_ai_generate_procedural_asset",
+      "description": "Generates procedural 3D asset blueprints and SDF primitive construction recipes directly executable by GAMA-Forge.",
+      "parameters": {
+        "properties": {
+          "assetType": {
+            "description": "Category of procedural asset",
+            "enum": [
+              "building",
+              "barrier",
+              "column",
+              "prop"
+            ],
+            "type": "string"
+          },
+          "scale": {
+            "description": "Overall scale multiplier (default: 1.0)",
+            "type": "number"
+          },
+          "style": {
+            "description": "Aesthetic architectural style",
+            "enum": [
+              "futuristic",
+              "industrial",
+              "organic",
+              "classical"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "assetType"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_audio_adaptive_step",
+      "description": "Simulates adaptive multi-stem audio synthesizer (Ambient drone, Combat horde, Danger heartbeat) and calculates stem volumes and audio frames.",
+      "parameters": {
+        "properties": {
+          "framesToSynthesize": {
+            "description": "Number of sample frames to synthesize (default: 512)",
+            "type": "number"
+          },
+          "playerHealth": {
+            "description": "Player health percentage between 0.0 and 1.0",
+            "type": "number"
+          },
+          "threatLevel": {
+            "description": "Horde combat threat level between 0.0 and 1.0",
+            "type": "number"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_benchmark_master",
+      "description": "Comprehensive multi-phase benchmark across 2D, 3D, 4D, and 5D physics regimes.",
+      "parameters": {
+        "properties": {
+          "iterations": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_clifford_rotor",
+      "description": "Rotates an N-dimensional vector in arbitrary G_N (N >= 6) Clifford algebra using rotor sandwich products.",
+      "parameters": {
+        "properties": {
+          "angleRad": {
+            "description": "Rotation angle in radians (default: 1.5707)",
+            "type": "number"
+          },
+          "dim": {
+            "description": "Dimension N (default: 6)",
+            "type": "number"
+          },
+          "planeI": {
+            "description": "First axis index i (default: 0)",
+            "type": "number"
+          },
+          "planeJ": {
+            "description": "Second axis index j (default: 5)",
+            "type": "number"
+          },
+          "vector": {
+            "description": "Input N-dimensional vector components",
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_cosserat_step",
+      "description": "Simulates discrete Cosserat rod elastica mechanics for tendons, biological filaments, or flexible beams.",
+      "parameters": {
+        "properties": {
+          "length": {
+            "description": "Total unstretched length in meters (default: 1.0)",
+            "type": "number"
+          },
+          "numSegments": {
+            "description": "Number of discrete segments (default: 8)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Time steps (default: 15)",
+            "type": "number"
+          },
+          "tipForceY": {
+            "description": "Tip pull force along Y in Newtons (default: -50.0)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_dsl_compile",
+      "description": "Compiles GAMA DSL scene into contiguous Flat SoA TypedArray tables and instantiates physics worlds in under 0.05ms.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "GAMA DSL source script",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_dsl_live_patch",
+      "description": "Hot-patches live physics parameters (gravity, damping, hyperSpin) or injects entities into the running simulation without reset.",
+      "parameters": {
+        "properties": {
+          "damping": {
+            "description": "Linear damping factor between 0.0 and 1.0",
+            "type": "number"
+          },
+          "gravityY": {
+            "description": "Updated gravity along Y axis",
+            "type": "number"
+          },
+          "hyperSpinXW": {
+            "description": "4D or 5D rotation speed in XW plane",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_dsl_verify",
+      "description": "Verifies GAMA DSL code syntax, returning token stream statistics, AST structure, and validation errors.",
+      "parameters": {
+        "properties": {
+          "code": {
+            "description": "GAMA DSL source script",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_facial_evaluate_ssss",
+      "description": "Evaluates Subsurface Scattering (SSSS) multi-lobe diffusion profile (Burley normalized dipole) and cornea optics refraction according to Snell's Law (IOR = 1.376).",
+      "parameters": {
+        "properties": {
+          "incidentAngleDeg": {
+            "description": "Incident light angle in degrees relative to corneal surface normal",
+            "type": "number"
+          },
+          "subsurfaceColor": {
+            "description": "RGB subsurface albedo [r, g, b] in range [0.0, 1.0]",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_facial_simulate_tick",
+      "description": "Simulates photorealistic facial biomechanics: updates neural activation dynamics, 3-element Hill muscle shortening, isochoric radial belly expansion (pi*r^2*l = const), and strain-driven dynamic wrinkle weights.",
+      "parameters": {
+        "properties": {
+          "activationAU1": {
+            "description": "AU1 Inner Brow Raiser target excitation [0.0, 1.0]",
+            "type": "number"
+          },
+          "activationAU12": {
+            "description": "AU12 Lip Corner Puller target excitation [0.0, 1.0] (smile)",
+            "type": "number"
+          },
+          "activationAU4": {
+            "description": "AU4 Brow Lowerer target excitation [0.0, 1.0] (frown)",
+            "type": "number"
+          },
+          "dt": {
+            "description": "Simulation timestep in seconds (default: 0.0166)",
+            "type": "number"
+          },
+          "substeps": {
+            "description": "Number of sub-integration steps (default: 1)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_fdtd_em_step",
+      "description": "Steps 3D Yee-lattice Maxwell electrodynamic field solver with absorbing boundaries.",
+      "parameters": {
+        "properties": {
+          "pulseAmplitude": {
+            "description": "Gaussian source pulse amplitude (default: 10.0)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Number of FDTD leapfrog steps (default: 10)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_forge_recipe_generate",
+      "description": "Generates high-fidelity watertight 3D procedural assets across 4 genres (Humanoids, Vehicles, Weapons, Props) via mathematical SDF/CSG without external files.",
+      "parameters": {
+        "properties": {
+          "autoRig": {
+            "description": "If true and humanoid, automatically binds 17-joint skeleton and 4-weight skinning",
+            "type": "boolean"
+          },
+          "exportGlb": {
+            "description": "If true, returns base64-encoded binary .glb asset",
+            "type": "boolean"
+          },
+          "genreTheme": {
+            "description": "Genre theme (for humanoid recipes)",
+            "enum": [
+              "TACTICAL",
+              "SCI_FI",
+              "MEDIEVAL_FANTASY",
+              "STYLIZED"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier to store the generated mesh in Forge session",
+            "type": "string"
+          },
+          "lodLevel": {
+            "description": "Mesh density LOD level (default: MED)",
+            "enum": [
+              "LOW",
+              "MED",
+              "HIGH"
+            ],
+            "type": "string"
+          },
+          "propCategory": {
+            "description": "Environment prop class (for environment_prop recipes)",
+            "enum": [
+              "BARRIER",
+              "CONTAINER",
+              "PIPE_JUNCTION",
+              "CRYSTAL_CLUSTER",
+              "RUNIC_STELE"
+            ],
+            "type": "string"
+          },
+          "recipeType": {
+            "description": "Category of the parametric blueprint recipe",
+            "enum": [
+              "humanoid",
+              "vehicle",
+              "weapon",
+              "environment_prop"
+            ],
+            "type": "string"
+          },
+          "scale": {
+            "description": "Global geometric scaling factor (default: 1.0)",
+            "type": "number"
+          },
+          "vehicleType": {
+            "description": "Vehicle type (for vehicle recipes)",
+            "enum": [
+              "ROVER",
+              "INTERCEPTOR",
+              "HOVER_SKIF",
+              "QUAD"
+            ],
+            "type": "string"
+          },
+          "weaponCategory": {
+            "description": "Weapon class (for weapon recipes)",
+            "enum": [
+              "BALLISTIC",
+              "MELEE",
+              "ENERGY"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "recipeType"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_get_viewport_snapshot",
+      "description": "Captures active GAMA viewport telemetry, returning projected entity coordinates, ASCII depth maps, and render metrics for agent spatial reasoning.",
+      "parameters": {
+        "properties": {
+          "gridHeight": {
+            "description": "ASCII depth grid height (default: 16)",
+            "type": "number"
+          },
+          "gridWidth": {
+            "description": "ASCII depth grid width (default: 32)",
+            "type": "number"
+          },
+          "includeEntities": {
+            "description": "Whether to include projected 2D entity screen coordinates (default: true)",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_granular_step",
+      "description": "Steps Discrete Element Method (DEM) Hertz-Mindlin granular soil particles.",
+      "parameters": {
+        "properties": {
+          "particleCount": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_gym_step",
+      "description": "Executes vectorized RL agent stepping, observation normalization and reward computation.",
+      "parameters": {
+        "properties": {
+          "numEnvs": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_hardware_audit_cache",
+      "description": "Audits memory hierarchy and cache-line alignment of the Structure-of-Arrays (SoA) physics memory pool. Verifies 64-byte alignment, contiguous flat-array packing, and zero-GC guarantees.",
+      "parameters": {
+        "properties": {
+          "entityCapacity": {
+            "description": "Number of active simulated bodies to audit (default: 10000)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_hardware_benchmark",
+      "description": "Benchmarks hardware saturation: tests Lock-Free Work-Stealing Queue dispatch latency and WASM SIMD 128-bit 15-axis SAT narrowphase collision resolution.",
+      "parameters": {
+        "properties": {
+          "iterations": {
+            "description": "Number of operations to benchmark (default: 500)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_htn_plan",
+      "description": "Solves hierarchical tactical task network decomposition for squad AI and combat agents.",
+      "parameters": {
+        "properties": {
+          "targetSpotted": {
+            "description": "Whether enemy target is in line of sight (default: true)",
+            "type": "boolean"
+          },
+          "taskName": {
+            "description": "Compound root task (default: SecureArea)",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_inspector_telemetry",
+      "description": "Controls in-engine Visual DevTools, generates SAT collider wireframe lines, tunes 3-point tactical lighting, and controls GAMA-Lumen GI and GAMA-TSR/Meshlets.",
+      "parameters": {
+        "properties": {
+          "action": {
+            "description": "Inspector operation to perform",
+            "enum": [
+              "get_telemetry",
+              "tune_lighting",
+              "register_entity",
+              "get_wireframes",
+              "toggle_overlay",
+              "tune_gi",
+              "get_gi_status",
+              "tune_tsr",
+              "get_tsr_status",
+              "get_meshlet_telemetry",
+              "pick_entity",
+              "select_entity",
+              "mutate_entity"
+            ],
+            "type": "string"
+          },
+          "entity": {
+            "properties": {
+              "colliderType": {
+                "enum": [
+                  "BOX",
+                  "SPHERE",
+                  "CAPSULE"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "isColliding": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string"
+              },
+              "position": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "size": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "gi": {
+            "properties": {
+              "acesToneMapping": {
+                "type": "boolean"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "indirectIntensity": {
+                "type": "number"
+              },
+              "multiBounceIntensity": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "lighting": {
+            "properties": {
+              "fillIntensity": {
+                "type": "number"
+              },
+              "keyIntensity": {
+                "type": "number"
+              },
+              "rimIntensity": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "mutation": {
+            "properties": {
+              "color": {
+                "type": "string"
+              },
+              "force": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "isStatic": {
+                "type": "boolean"
+              },
+              "position": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              "scale": {
+                "type": "number"
+              },
+              "velocity": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "screenCoordinates": {
+            "properties": {
+              "cameraAzimuth": {
+                "type": "number"
+              },
+              "cameraDistance": {
+                "type": "number"
+              },
+              "cameraElevation": {
+                "type": "number"
+              },
+              "screenHeight": {
+                "type": "number"
+              },
+              "screenWidth": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "selectedEntityId": {
+            "type": "string"
+          },
+          "tsr": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "feedbackFactor": {
+                "type": "number"
+              },
+              "sharpness": {
+                "type": "number"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_kerr_geodesic_step",
+      "description": "Integrates relativistic photon or particle geodesics orbiting a rotating Kerr black hole.",
+      "parameters": {
+        "properties": {
+          "blackHoleMass": {
+            "description": "Mass M (default: 1.0)",
+            "type": "number"
+          },
+          "dLambda": {
+            "description": "Affine parameter step size (default: 0.05)",
+            "type": "number"
+          },
+          "initialRadius": {
+            "description": "Initial radial distance r in units of M (default: 6.0)",
+            "type": "number"
+          },
+          "spinParam": {
+            "description": "Dimensionless spin parameter a between 0 and 0.998 (default: 0.9)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Integration steps (default: 20)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_motion_inertialize",
+      "description": "Evaluates second-order polynomial decay transitions eliminating motion transition hitching and foot skating without dual-clip blending.",
+      "parameters": {
+        "properties": {
+          "elapsedTimeSec": {
+            "description": "Time elapsed in transition in seconds (default: 0.10)",
+            "type": "number"
+          },
+          "initialOffset": {
+            "description": "Discontinuity offset in meters (default: 0.50)",
+            "type": "number"
+          },
+          "transitionDurationSec": {
+            "description": "Total transition duration in seconds (default: 0.20)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_motion_matching_query",
+      "description": "Executes zero-allocation metric KNN pose search (<0.05ms) across 50,000 motion frames, evaluating future trajectory and velocity cost functions.",
+      "parameters": {
+        "properties": {
+          "queryAngVel": {
+            "description": "Desired root angular velocity in rad/s (default: 0.1)",
+            "type": "number"
+          },
+          "queryVx": {
+            "description": "Desired root velocity X in m/s (default: 0.0)",
+            "type": "number"
+          },
+          "queryVz": {
+            "description": "Desired root velocity Z in m/s (default: 4.0)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_netcode_audit",
+      "description": "Audits network lockstep state synchronization and hashes frame state buffers.",
+      "parameters": {
+        "properties": {
+          "frame": {
+            "type": "number"
+          },
+          "stateFloats": {
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_neural_inference",
+      "description": "Runs high-speed sub-0.05ms neural surrogate forward inference.",
+      "parameters": {
+        "properties": {
+          "inputFeatures": {
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_orbit_step",
+      "description": "Simulates N-body celestial mechanics and relativistic geodesics.",
+      "parameters": {
+        "properties": {
+          "bodyCount": {
+            "type": "number"
+          },
+          "dt": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_project_4d",
+      "description": "Calculates dual-stage 4D -> 3D perspective projection with chromatic depth cueing.",
+      "parameters": {
+        "properties": {
+          "hyperDistance": {
+            "type": "number"
+          },
+          "points4D": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "points4D"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_quantum_step",
+      "description": "Advances 2D Split-Operator Schrodinger wavepacket simulation through arbitrary potential barriers.",
+      "parameters": {
+        "properties": {
+          "barrierHeight": {
+            "description": "Potential barrier height V0 (default: 15.0)",
+            "type": "number"
+          },
+          "barrierX": {
+            "description": "Barrier X center position (default: 32)",
+            "type": "number"
+          },
+          "dt": {
+            "description": "Time increment per step (default: 0.01)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Number of time steps (default: 5)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_rigging_autorig",
+      "description": "Calculates 17-joint anatomical skeleton and 4-weight skinning GPU buffers (skinIndices & skinWeights) for any PolygonMesh.",
+      "parameters": {
+        "properties": {
+          "falloffExponent": {
+            "description": "Distance weighting exponent (default: 2.0)",
+            "type": "number"
+          },
+          "meshId": {
+            "description": "ID of an existing mesh in Forge session or default humanoid",
+            "type": "string"
+          },
+          "scale": {
+            "description": "Scale factor for skeletal bounds (default: 1.0)",
+            "type": "number"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_rotate_4d_vector",
+      "description": "Rotates a 4D vector across any of the 6 orthogonal planes in SO(4).",
+      "parameters": {
+        "properties": {
+          "plane": {
+            "enum": [
+              "xy",
+              "xz",
+              "xw",
+              "yz",
+              "yw",
+              "zw"
+            ],
+            "type": "string"
+          },
+          "theta": {
+            "type": "number"
+          },
+          "vector": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "vector",
+          "plane",
+          "theta"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_simulate_2d",
+      "description": "2D physics simulation with SAT collision resolution, Baumgarte stabilization, and Coulomb friction.",
+      "parameters": {
+        "properties": {
+          "bodies": {
+            "description": "List of initial 2D bodies",
+            "type": "array"
+          },
+          "dt": {
+            "description": "Delta time per step in seconds (default: 0.0166)",
+            "type": "number"
+          },
+          "gravityY": {
+            "description": "Gravity Y (default: 980)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Number of physics sub-steps (default: 1)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_simulate_3d",
+      "description": "3D rigid body simulation using 15-axis SAT and SO(3) Quaternions.",
+      "parameters": {
+        "properties": {
+          "bodies": {
+            "type": "array"
+          },
+          "dt": {
+            "type": "number"
+          },
+          "gravityY": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_simulate_4d",
+      "description": "4D Hyper-Physics simulation with 6-plane SO(4) hyper-rotations and Tesseracts.",
+      "parameters": {
+        "properties": {
+          "bodies": {
+            "type": "array"
+          },
+          "dt": {
+            "type": "number"
+          },
+          "hyperSpinXW": {
+            "type": "number"
+          },
+          "hyperSpinZW": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_simulate_5d",
+      "description": "5D Multi-Physics simulation with 10-plane SO(5) bivectors and 5-Cube Penteracts.",
+      "parameters": {
+        "properties": {
+          "bodies": {
+            "type": "array"
+          },
+          "dt": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_soil_dem_step",
+      "description": "Simulates Hertz-Mindlin DEM granular soil particles and Drucker-Prager continuum plasticity.",
+      "parameters": {
+        "properties": {
+          "dt": {
+            "description": "Time increment per step (default: 0.002)",
+            "type": "number"
+          },
+          "particleCount": {
+            "description": "Number of soil particles (default: 24)",
+            "type": "number"
+          },
+          "steps": {
+            "description": "Simulation steps (default: 20)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_spatial_acoustic_raytrace",
+      "description": "Traces physical acoustic rays against BVH scene geometry, calculating occlusion transmission loss (>18dB) and Sabine room reverberation RT60.",
+      "parameters": {
+        "properties": {
+          "averageAbsorption": {
+            "description": "Average surface absorption coefficient [0.01, 0.99] (default: 0.12)",
+            "type": "number"
+          },
+          "isOccluded": {
+            "description": "Whether direct path is obstructed by a solid barrier",
+            "type": "boolean"
+          },
+          "roomSurfaceAreaM2": {
+            "description": "Total surface area in square meters (default: 220.0)",
+            "type": "number"
+          },
+          "roomVolumeM3": {
+            "description": "Room volume in cubic meters (default: 200.0)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_streaming_query_octree",
+      "description": "Queries 100km boundless world coordinates: computes 30-bit 3D integer Morton codes, evaluates distance-based LOD tiers, and validates 128MB resident memory limits.",
+      "parameters": {
+        "properties": {
+          "cameraDistMeters": {
+            "description": "Distance to camera in meters (default: 80.0)",
+            "type": "number"
+          },
+          "worldX": {
+            "description": "World coordinate X in meters [-50000, 50000]",
+            "type": "number"
+          },
+          "worldY": {
+            "description": "World coordinate Y in meters [-50000, 50000]",
+            "type": "number"
+          },
+          "worldZ": {
+            "description": "World coordinate Z in meters [-50000, 50000]",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_streaming_shift_origin",
+      "description": "Evaluates and executes floating-origin dynamic re-centering (>2,000m threshold), shifting simulation frame to (0,0,0) and preserving 32-bit floating-point precision.",
+      "parameters": {
+        "properties": {
+          "camX": {
+            "description": "Current camera position X in meters (default: 2500.0)",
+            "type": "number"
+          },
+          "camY": {
+            "description": "Current camera position Y in meters (default: 0.0)",
+            "type": "number"
+          },
+          "camZ": {
+            "description": "Current camera position Z in meters (default: 0.0)",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_synthesize_audio",
+      "description": "Synthesizes binaural 3D spatialized impact audio via HRTF filters.",
+      "parameters": {
+        "properties": {
+          "impactVelocity": {
+            "type": "number"
+          },
+          "listenerPos": {
+            "type": "object"
+          },
+          "material": {
+            "type": "string"
+          },
+          "sourcePos": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_terrain_blast",
+      "description": "Performs explosive destructive voxel terrain blast and carve operations.",
+      "parameters": {
+        "properties": {
+          "center": {
+            "type": "object"
+          },
+          "radius": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "gama_voronoi_fracture",
+      "description": "Fractures a convex 3D mesh volume into Lloyd-relaxed Voronoi polyhedral cells.",
+      "parameters": {
+        "properties": {
+          "impactEnergy": {
+            "type": "number"
+          },
+          "seedCount": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    }
+  ]
+}
